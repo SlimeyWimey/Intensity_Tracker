@@ -37,7 +37,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     getLocation();
-    futureCarbonIntensity = fetchData();
   }
 
   @override
@@ -52,11 +51,12 @@ class _HomeState extends State<Home> {
           title: const Text('Intensity Tracker'),
         ),
         body: Center(
-          child:  FutureBuilder<CarbonIntensity>(
+          child: FutureBuilder<CarbonIntensity>(
             future: futureCarbonIntensity,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                String displayedData = "Zone : ${snapshot.data!.zone}\nCarbon Intensity : ${snapshot.data!.carbonIntensity}\nDate Time : ${snapshot.data!.dateTime}\nUpdated at : ${snapshot.data!.updatedAt}\nCreated at : ${snapshot.data!.createdAt}\nEmission Factor Type${snapshot.data!.emissionFactorType}\nIs Estimated : :${snapshot.data!.isEstimated}\nEstimation Method : ${snapshot.data!.estimationMethod}";
+                String displayedData =
+                    "Zone : ${snapshot.data!.zone}\nCarbon Intensity : ${snapshot.data!.carbonIntensity}\nDate Time : ${snapshot.data!.dateTime}\nUpdated at : ${snapshot.data!.updatedAt}\nCreated at : ${snapshot.data!.createdAt}\nEmission Factor Type : ${snapshot.data!.emissionFactorType}\nIs Estimated : ${snapshot.data!.isEstimated}\nEstimation Method : ${snapshot.data!.estimationMethod}";
                 return Text(displayedData);
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
@@ -71,45 +71,6 @@ class _HomeState extends State<Home> {
     );
   }
 
-  /*@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Intensity Tracker'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Location Info:', style: getStyle(size: 24),),
-            const SizedBox(height: 20,),
-            Text('Latitude: ${lat ?? 'Loading ...'}', style: getStyle(),),
-            const SizedBox(height: 20,),
-            Text('Longitude: ${long ?? 'Loading ...'}', style: getStyle(),),
-            const SizedBox(height: 20,),
-            Text('Country: ${country ?? 'Loading ...'}', style: getStyle(),),
-            const SizedBox(height: 20,),
-            Text('Admin Area: ${adminArea ?? 'Loading ...'}', style: getStyle(),),
-            const SizedBox(height: 20,),
-            FutureBuilder<CarbonIntensity>(
-              future: carbonIntensity,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data!.carbonIntensity as String);
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-
-                // By default, show a loading spinner.
-                return const CircularProgressIndicator();
-              },
-            )
-          ],
-        ),
-      ),
-    );
-  }*/
 
   TextStyle getStyle({double size = 20}) =>
       TextStyle(fontSize: size, fontWeight: FontWeight.bold);
@@ -127,6 +88,7 @@ class _HomeState extends State<Home> {
         country = placeMark?.country ?? 'could not get country';
         adminArea = placeMark?.administrativeArea ?? 'could not get admin area';
       });
+      futureCarbonIntensity = fetchData(lat, long);
     }
   }
 }

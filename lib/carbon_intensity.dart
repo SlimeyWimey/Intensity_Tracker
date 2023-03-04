@@ -4,17 +4,24 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
-Future<CarbonIntensity> fetchData() async {
-  /*final response = await http.get(Uri.parse(
-      'https://api-access.electricitymaps.com/2w97h07rvxvuaa1g/carbon-intensity/latest?zone=FR'));*/
+Future<CarbonIntensity> fetchData(String? lat, String? lon) async {
   String token = 'hMowYuqF6AK9Ox6jpaYeb8FFujHaK4a4';
-  final response = await http.get(
-    Uri.parse('https://api-access.electricitymaps.com/2w97h07rvxvuaa1g/carbon-intensity/latest?zone=FR'),
-    // Send authorization headers to the backend.
-    headers: {
-      'X-BLOBR-KEY' : token
-    },
-  );
+  final http.Response response;
+  if (lat == null || lon == null) {
+    response = await http.get(
+      Uri.parse(
+          'https://api-access.electricitymaps.com/2w97h07rvxvuaa1g/carbon-intensity/latest?zone=DE'),
+      // Send authorization headers to the backend.
+      headers: {'X-BLOBR-KEY': token},
+    );
+  } else {
+    response = await http.get(
+      Uri.parse(
+          'https://api-access.electricitymaps.com/2w97h07rvxvuaa1g/carbon-intensity/latest?lat=$lat&lon=$lon'),
+      // Send authorization headers to the backend.
+      headers: {'X-BLOBR-KEY': token},
+    );
+  }
   print(response.statusCode);
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -23,7 +30,7 @@ Future<CarbonIntensity> fetchData() async {
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load data');
+    throw Exception('Failed to load data. You probably are located in an unsupported area.');
   }
 }
 
