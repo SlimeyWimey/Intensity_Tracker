@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'carbon_intensity.dart';
 import 'location_service.dart';
-import 'package:http/http.dart' as http;
-
 void main() {
   runApp(const MyApp());
 }
@@ -37,6 +35,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     getLocation();
+    futureCarbonIntensity = fetchData(lat, long);
   }
 
   @override
@@ -56,7 +55,7 @@ class _HomeState extends State<Home> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 String displayedData =
-                    "Zone : ${snapshot.data!.zone}\nCarbon Intensity : ${snapshot.data!.carbonIntensity}\nDate Time : ${snapshot.data!.dateTime}\nUpdated at : ${snapshot.data!.updatedAt}\nCreated at : ${snapshot.data!.createdAt}\nEmission Factor Type : ${snapshot.data!.emissionFactorType}\nIs Estimated : ${snapshot.data!.isEstimated}\nEstimation Method : ${snapshot.data!.estimationMethod}";
+                    "Zone : ${snapshot.data!.zone}\nCarbon Intensity : ${snapshot.data!.carbonIntensity}\nDate Time : ${cleanDate(snapshot.data!.dateTime)}\nUpdated at : ${cleanDate(snapshot.data!.updatedAt)}\nCreated at : ${cleanDate(snapshot.data!.createdAt)}\nEmission Factor Type : ${snapshot.data!.emissionFactorType}\nIs Estimated : ${snapshot.data!.isEstimated}\nEstimation Method : ${snapshot.data!.estimationMethod.replaceAll('_', ' ')}";
                 return Text(displayedData);
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
@@ -90,5 +89,13 @@ class _HomeState extends State<Home> {
       });
       futureCarbonIntensity = fetchData(lat, long);
     }
+  }
+
+  String cleanDate(String dirtyDate) {
+    String cleanDate;
+    final date = dirtyDate.split('T');
+    final hour = date.last.split('.');
+    return cleanDate = "${date.first} ${hour.first}";
+
   }
 }
