@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'carbon_intensity.dart';
 import 'location_service.dart';
+import 'package:http/http.dart' as http;
+
 void main() {
   runApp(const MyApp());
 }
@@ -54,9 +56,44 @@ class _HomeState extends State<Home> {
             future: futureCarbonIntensity,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                // set the color based on the carbon intensity value
+                Color color = Colors.green;
+                double value = double.parse(snapshot.data!.carbonIntensity);
+                if (value >= 100 && value < 200) {
+                  color = Colors.lightGreen;
+                } else if (value >= 200 && value < 500) {
+                  color = Colors.yellow;
+                } else if (value >= 500 && value < 800) {
+                  color = Colors.orange;
+                } else if (value >= 800) {
+                  color = Colors.black;
+                }
+
+                // create the progress bar widget
+                Widget progressBar = LinearProgressIndicator(
+                  value: value / 1000,
+                  backgroundColor: Colors.grey[300],
+                  valueColor: AlwaysStoppedAnimation(color),
+                );
+
+                // create the text widget with the displayed data
                 String displayedData =
-                    "Zone : ${snapshot.data!.zone}\nCarbon Intensity : ${snapshot.data!.carbonIntensity}\nDate Time : ${cleanDate(snapshot.data!.dateTime)}\nUpdated at : ${cleanDate(snapshot.data!.updatedAt)}\nCreated at : ${cleanDate(snapshot.data!.createdAt)}\nEmission Factor Type : ${snapshot.data!.emissionFactorType}\nIs Estimated : ${snapshot.data!.isEstimated}\nEstimation Method : ${snapshot.data!.estimationMethod.replaceAll('_', ' ')}";
-                return Text(displayedData);
+                    "Zone : ${snapshot.data!.zone}\nCarbon Intensity : ${snapshot.data!.carbonIntensity}\nDate Time : ${snapshot.data!.dateTime}\nUpdated at : ${snapshot.data!.updatedAt}\nCreated at : ${snapshot.data!.createdAt}\nEmission Factor Type : ${snapshot.data!.emissionFactorType}\nIs Estimated : ${snapshot.data!.isEstimated}\nEstimation Method : ${snapshot.data!.estimationMethod}";
+                Widget dataText = Text(displayedData);
+
+                // create the column with the progress bar and data text widgets
+                Widget column = Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 10),
+                    progressBar,
+                    const SizedBox(height: 10),
+                    dataText,
+                  ],
+                );
+
+                return column;
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
@@ -89,13 +126,5 @@ class _HomeState extends State<Home> {
       });
       futureCarbonIntensity = fetchData(lat, long);
     }
-  }
-
-  String cleanDate(String dirtyDate) {
-    String cleanDate;
-    final date = dirtyDate.split('T');
-    final hour = date.last.split('.');
-    return cleanDate = "${date.first} ${hour.first}";
-
   }
 }
