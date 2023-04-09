@@ -38,7 +38,9 @@ dependencies:
   location: ^4.2.0
   geocoding: ^2.0.5
   http: ^0.13.5
-
+  syncfusion_flutter_charts: ^18.4.49
+  google_fonts: ^4.0.3
+  boxicons: ^2.1.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
