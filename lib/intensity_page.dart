@@ -14,26 +14,17 @@ class IntensityPage extends StatefulWidget {
 class _IntensityPageState extends State<IntensityPage> {
   String? lat, long, country, adminArea;
   late Future<CarbonIntensity> futureCarbonIntensity;
+
   @override
   void initState() {
     super.initState();
     getLocation();
-    futureCarbonIntensity = fetchData(lat, long);
+    //futureCarbonIntensity = fetchData(lat, long);
     //futureCarbonHistory = fetchHistoryData(lat, long);
   }
+
+
   @override
-  /*Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:  Color.fromARGB(255, 227, 227, 227),
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 25),
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Text('Latest C.I', style: GoogleFonts.openSans(fontSize: 30)),
-        ),
-      ),
-    );
-  }*/
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Intensity Tracker',
@@ -88,9 +79,10 @@ class _IntensityPageState extends State<IntensityPage> {
   }
 
   String cleanDate(String dirtyDate) {
-    String cleanDate;
+    String cleanDate = '';
     final date = dirtyDate.split('T');
     final hour = date.last.split('.');
+    print(cleanDate);
     return cleanDate = "${date.first} ${hour.first}";
   }
 }

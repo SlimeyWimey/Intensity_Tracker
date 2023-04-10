@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:intensity_tracker/carbon_history.dart';
 import 'package:intensity_tracker/carbon_intensity.dart';
 
 import 'location_service.dart';
@@ -17,7 +16,6 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   String? lat, long, country, adminArea;
-  late Future<CarbonHistory> futureCarbonHistory;
   List history = [];
   bool isLoading = false;
 
@@ -25,16 +23,16 @@ class _HistoryPageState extends State<HistoryPage> {
   void initState() {
     super.initState();
     getLocation();
-    fetchHistory();
+    fetchHistory(lat, long);
   }
 
-  fetchHistory() async {
+  fetchHistory(String? lat, String? lon) async {
     setState(() {
       isLoading = true;
     });
     String token = 'hPEgMAy3Z5f0IVdphzUPRyTaNVYgU1VR';
     final http.Response response;
-    if (lat == null || long == null) {
+    if (lat == null || lon == null) {
       response = await http.get(
         Uri.parse(
             'https://api-access.electricitymaps.com/2w97h07rvxvuaa1g/carbon-intensity/history?zone=DE'),
@@ -44,7 +42,7 @@ class _HistoryPageState extends State<HistoryPage> {
     } else {
       response = await http.get(
         Uri.parse(
-            'https://api-access.electricitymaps.com/2w97h07rvxvuaa1g/carbon-intensity/history?lat=$lat&lon=$long'),
+            'https://api-access.electricitymaps.com/2w97h07rvxvuaa1g/carbon-intensity/history?lat=$lat&lon=$lon'),
         // Send authorization headers to the backend.
         headers: {'X-BLOBR-KEY': token},
       );
@@ -149,7 +147,7 @@ class _HistoryPageState extends State<HistoryPage> {
         country = placeMark?.country ?? 'could not get country';
         adminArea = placeMark?.administrativeArea ?? 'could not get admin area';
       });
-      futureCarbonHistory = fetchHistoryData(lat, long);
+      fetchHistory(lat, long);
     }
   }
 
