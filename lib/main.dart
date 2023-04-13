@@ -33,6 +33,15 @@ class _HomeState extends State<Home> {
   String? lat, long, country, adminArea;
   late Future<CarbonIntensity> futureCarbonIntensity;
 
+  // Dictionnaire des codes des pays correspondants à leur drapeau
+  final Map<String, String> _countryFlags = {
+    'FR': '🇫🇷',
+    'US': '🇺🇸',
+    'GB': '🇬🇧',
+    'DE': '🇩🇪',
+
+  };
+
   @override
   void initState() {
     super.initState();
@@ -69,11 +78,26 @@ class _HomeState extends State<Home> {
                   color = Colors.black;
                 }
 
+                // Récupérer le drapeau correspondant à la zone
+                String zone = snapshot.data!.zone;
+                String? flag = _countryFlags[zone.substring(0, 2)];
+
+                // Créer le widget drapeau
+                Widget flagWidget = Text(
+                  flag ?? '',
+                  style: const TextStyle(fontSize: 40),
+                );
+
                 // create the progress bar widget
-                Widget progressBar = LinearProgressIndicator(
-                  value: value / 1000,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation(color),
+                Widget progressBar = Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  // ajustez cette valeur pour ajouter de l'espace autour de la barre de progression
+                  child: LinearProgressIndicator(
+                    value: value / 1000,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: AlwaysStoppedAnimation(color),
+                    minHeight: 10,
+                  ),
                 );
 
                 // create the text widget with the displayed data
@@ -81,19 +105,53 @@ class _HomeState extends State<Home> {
                     "Zone : ${snapshot.data!.zone}\nCarbon Intensity : ${snapshot.data!.carbonIntensity}\nDate Time : ${snapshot.data!.dateTime}\nUpdated at : ${snapshot.data!.updatedAt}\nCreated at : ${snapshot.data!.createdAt}\nEmission Factor Type : ${snapshot.data!.emissionFactorType}\nIs Estimated : ${snapshot.data!.isEstimated}\nEstimation Method : ${snapshot.data!.estimationMethod}";
                 Widget dataText = Text(displayedData);
 
+                /*
+                // create the title widget
+                Widget title = const Text(
+                  'Carbon Intensity Tracker',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                );
+                */
+
                 // create the column with the progress bar and data text widgets
                 Widget column = Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 50),
+                    flagWidget,
+                    const SizedBox(height: 50),
                     progressBar,
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 50),
                     dataText,
                   ],
                 );
+// wrap the column with an Expanded widget
+                Widget expandedColumn = Expanded(child: column);
 
-                return column;
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Intensity Tracker',
+                        style: TextStyle(
+                            fontSize: 32, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        width: 300,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      //title,
+                      expandedColumn,
+                    ],
+                  ),
+                );
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
@@ -106,7 +164,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
 
   TextStyle getStyle({double size = 20}) =>
       TextStyle(fontSize: size, fontWeight: FontWeight.bold);
