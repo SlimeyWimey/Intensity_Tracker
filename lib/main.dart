@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:boxicons/boxicons.dart';
 import 'package:flutter/services.dart';
 import 'package:intensity_tracker/carbon_history_plot.dart';
+import 'package:intensity_tracker/forecast_plot.dart';
 
-import 'history_page.dart';
+import 'consumption_breakdown.dart';
 import 'intensity_page.dart';
 
 void main() {
@@ -37,8 +38,9 @@ class _BottomTabBarState extends State<BottomTabBar> {
   int _index = 0;
   final screens = [
     IntensityPage(),
-    HistoryPage(),
+    BreakdownPage(),
     CarbonHistoryPlot(),
+    ForecastPlot(),
   ];
 
   @override
@@ -46,6 +48,7 @@ class _BottomTabBarState extends State<BottomTabBar> {
     return Scaffold(
         body: screens[_index],
         bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
             currentIndex: _index,
             onTap: (value) {
               setState(() {
@@ -59,12 +62,16 @@ class _BottomTabBarState extends State<BottomTabBar> {
                 label: 'Latest C.I',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Boxicons.bx_search),
-                label: 'C.I History',
+                icon: Icon(Boxicons.bx_bar_chart),
+                label: 'Origin Breakdown',
               ),
               BottomNavigationBarItem(
-              icon: Icon(Boxicons.bx_search),
+              icon: Icon(Boxicons.bx_line_chart),
               label: 'History Plot',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Boxicons.bx_chart),
+                label: 'C.I Forecast',
               ),
             ]));
   }
