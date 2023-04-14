@@ -67,7 +67,6 @@ class _CarbonHistoryPlot extends State<CarbonHistoryPlot> {
       isLoading = false;
     }
     //print("history :");
-    print(history);
   }
 
   @override
@@ -131,9 +130,7 @@ class _CarbonHistoryPlot extends State<CarbonHistoryPlot> {
     final date = dirtyDate.split('T');
     final hour = date.last.split('.');
     String cleanedDate = "${date.first} ${hour.first}";
-    print(cleanedDate);
     DateTime time = DateTime.parse(cleanedDate);
-    print(time);
     return time;
   }
 }

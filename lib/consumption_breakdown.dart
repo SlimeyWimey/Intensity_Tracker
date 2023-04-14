@@ -37,7 +37,6 @@ class _NestedObjectBarChart extends State<NestedObjectBarChart> {
     if (response.statusCode == 200) {
       setState(() {
         _data = jsonDecode(response.body);
-        print(_data);
       });
     } else {
       throw Exception('Failed to load data');
